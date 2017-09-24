@@ -7,8 +7,7 @@ console.log("hello world!!!!!!!!!");
 
 BasicGame.Boot.prototype = {
 
-
-    init: function() {
+  init: function() {
 
         //  Unless you specifically know your game needs to support multi-touch I would recommend setting this to 1
         this.input.maxPointers = 1;
@@ -38,6 +37,13 @@ BasicGame.Boot.prototype = {
   },
 
   create: function() {
+
+    //the game will have a sky blue background
+    this.game.stage.backgroundColor = '#5555ff';
+
+        //physics system
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
 
         //  By this point the preloader assets have loaded to the cache,
         //  we've set the game settings
