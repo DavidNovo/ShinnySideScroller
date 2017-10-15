@@ -101,6 +101,15 @@ BasicGame.Game.prototype = {
 
         //  Honestly, just about anything could go here. It's YOUR game after all. Eat your heart out!
 
+        // player land on ground instead of falling through
+        this.game.physics.arcade.collide(this.player, this.ground, this.playerHit, null, this);
+
+        // player bitten by a flea
+        this.game.physics.arcade.collide(this.player, this.fleas, this.playerBit, null, this);
+
+        // player can overlap with dirt mounds
+        this.game.physics.arcade.overlap(this.player, this.mounds, this.collect, this.checkDig, this);
+
     },
 
     render: function() {
