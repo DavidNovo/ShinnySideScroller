@@ -110,6 +110,22 @@ BasicGame.Game.prototype = {
         // player can overlap with dirt mounds
         this.game.physics.arcade.overlap(this.player, this.mounds, this.collect, this.checkDig, this);
 
+        //only respond to keys and keep the speed if the player is alive
+        if(this.player.alive && !this.stopped) {
+            
+            this.player.body.velocity.x = 200;
+
+             //take the appropriate action for swiping up or pressing up arrow on keyboard
+            //we don't wait until the swipe is finished (this.swipe.isUp),
+            //  because of latency problems (it takes too long to jump before hitting a flea)
+            if (this.swipe.isDown && (this.swipe.positionDown.y > this.swipe.position.y)) {
+                this.playerJump();
+            }
+            else if (this.cursors.up.isDown) {
+                this.playerJump();
+            }
+        }
+
     },
 
     render: function() {
@@ -157,6 +173,13 @@ BasicGame.Game.prototype = {
           flea.body.immovable = true;
           flea.body.collideWorldBounds = false;
         }
+      },
+
+      playerJump: function() {
+        //when the ground is a sprite, we need to test for "touching" instead of "blocked"
+        if(this.player.body.touching.down) {
+          this.player.body.velocity.y -= 700;
+        }    
       },
 
     quitGame: function(pointer) {
