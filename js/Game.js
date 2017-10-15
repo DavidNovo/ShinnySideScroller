@@ -3,7 +3,8 @@ var BasicGame = BasicGame || {};
 console.log("Game!!!!!!!!!");
 BasicGame.Game = function() {
 
-    //  When a State is added to Phaser it automatically has the following properties set on it, even if they already exist:
+    //  When a State is added to Phaser it automatically has the following 
+    // properties set on it, even if they already exist:
 
     this.game; //  a reference to the currently running game (Phaser.Game)
     this.add; //  used to add sprites, text, groups, etc (Phaser.GameObjectFactory)
@@ -29,9 +30,36 @@ BasicGame.Game = function() {
 
 BasicGame.Game.prototype = {
 
+    preload: function() {
+        this.game.time.advancedTiming = true;
+    },
+
     create: function() {
 
-        //  Honestly, just about anything could go here. It's YOUR game after all. Eat your heart out!
+    //  Honestly, just about anything could go here. It's YOUR game after all. Eat your heart out!
+
+    //set up background and ground layer
+    this.game.world.setBounds(0, 0, 3500, this.game.height);
+    this.grass = this.add.tileSprite(0,this.game.height-100,this.game.world.width,70,'grass');
+    this.ground = this.add.tileSprite(0,this.game.height-70,this.game.world.width,70,'ground');
+    
+    //create player and walk animation
+    this.player = this.game.add.sprite(this.game.width/2, this.game.height-90, 'dog');
+    this.player.animations.add('walk');
+    
+    //create the fleas
+    this.generateFleas();
+    //and the toy mounds
+    this.generateMounds();
+    
+    //put everything in the correct order (the grass will be camoflauge),
+    //but the toy mounds have to be above that to be seen, but behind the
+    //ground so they barely stick up
+    this.game.world.bringToTop(this.grass);
+    this.game.world.bringToTop(this.mounds);
+    this.game.world.bringToTop(this.ground);
+    //this.game.world.bringToTop(this.player);
+ 
 
     },
 
@@ -40,6 +68,53 @@ BasicGame.Game.prototype = {
         //  Honestly, just about anything could go here. It's YOUR game after all. Eat your heart out!
 
     },
+
+    render: function() {
+        //this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");   
+    },
+
+    generateMounds: function() {
+        this.mounds = this.game.add.group();
+     
+        //enable physics in them
+        this.mounds.enableBody = true;
+     
+        //phaser's random number generator
+        var numMounds = this.game.rnd.integerInRange(0, 5)
+        var mound;
+     
+        for (var i = 0; i < numMounds; i++) {
+          //add sprite within an area excluding the beginning and ending
+          //  of the game world so items won't suddenly appear or disappear when wrapping
+          var x = this.game.rnd.integerInRange(this.game.width, this.game.world.width - this.game.width);
+          mound = this.mounds.create(x, this.game.height-75, 'mound');
+          mound.body.velocity.x = 0;
+        }
+      },
+
+      generateFleas: function() {
+        this.fleas = this.game.add.group();
+        
+        //enable physics in them
+        this.fleas.enableBody = true;
+     
+        //phaser's random number generator
+        var numFleas = this.game.rnd.integerInRange(1, 5)
+        var flea;
+     
+        for (var i = 0; i < numFleas; i++) {
+          //add sprite within an area excluding the beginning and ending
+          //  of the game world so items won't suddenly appear or disappear when wrapping
+          var x = this.game.rnd.integerInRange(this.game.width, this.game.world.width - this.game.width);
+          flea = this.fleas.create(x, this.game.height-115, 'flea');
+     
+          //physics properties
+          flea.body.velocity.x = this.game.rnd.integerInRange(-20, 0);
+          
+          flea.body.immovable = true;
+          flea.body.collideWorldBounds = false;
+        }
+      },
 
     quitGame: function(pointer) {
 
@@ -50,5 +125,6 @@ BasicGame.Game.prototype = {
         this.state.start('MainMenu');
 
     }
+        
 
 };

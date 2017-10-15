@@ -46,6 +46,12 @@ BasicGame.Preloader.prototype = {
         this.load.audio('whine', ['assets/audio/whine.ogg', 'assets/audio/whine.mp3']);
         this.load.audio('bark', ['assets/audio/bark.ogg', 'assets/audio/bark.mp3']);
 
+        //from https://gamedevacademy.org/html5-phaser-tutorial-spacehipster-a-space-exploration-game/
+        this.load.image('mound', 'assets/images/rock.png');
+    
+        //Adapted from https://openclipart.org/detail/6570/flea:
+        this.load.image('flea', 'assets/images/flea.png');
+
     },
 
     create: function() {
