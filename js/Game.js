@@ -60,7 +60,41 @@ BasicGame.Game.prototype = {
     this.game.world.bringToTop(this.ground);
     //this.game.world.bringToTop(this.player);
  
+    
+    //enable physics on the player and ground
+    this.game.physics.arcade.enable(this.player);
+    this.game.physics.arcade.enable(this.ground);
+ 
+    //player gravity
+    this.player.body.gravity.y = 1000;
+    
+    //so player can walk on ground
+    this.ground.body.immovable = true;
+    this.ground.body.allowGravity = false;
 
+    //properties when the player is digging, scratching and standing, so we can use in update()
+    var playerDigImg = this.game.cache.getImage('playerDig');
+    this.player.animations.add('dig');
+    this.player.digDimensions = {width: playerDigImg.width, height: playerDigImg.height};
+    
+    var playerScratchImg = this.game.cache.getImage('playerScratch');
+    this.player.animations.add('scratch');
+    this.player.scratchDimensions = {width: playerScratchImg.width, height: playerScratchImg.height};
+    
+    this.player.standDimensions = {width: this.player.width, height: this.player.height};
+    this.player.anchor.setTo(0.5, 1);
+    
+    //the camera will follow the player in the world
+    this.game.camera.follow(this.player);
+    
+    //play the walking animation
+    this.player.animations.play('walk', 3, true);
+ 
+    //move player with cursor keys
+    this.cursors = this.game.input.keyboard.createCursorKeys();
+    
+    //...or by swiping
+    this.swipe = this.game.input.activePointer;
     },
 
     update: function() {
