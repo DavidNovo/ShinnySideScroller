@@ -20,7 +20,18 @@ BasicGame.MainMenu.prototype = {
 
         this.add.sprite(0, 0, 'titlepage');
 
-        this.playButton = this.add.button(400, 600, 'playButton', this.startGame, this, 'buttonOver', 'buttonOut', 'buttonOver');
+        // some text on the screen
+        var text = "Press play to begin";
+        var style = {
+            font: "30px Arial",
+            fill: "#fff",
+            align: "center"
+        };
+        var mainMenuText = this.game.add.text(this.game.width / 2, this.game.height / 2, text, style);
+        mainMenuText.anchor.set(0.5);
+
+        this.playButton = this.add.button(400, 600, 'playButton', this.startGame, this, 'buttonOver'
+            , 'buttonOut', 'buttonOver');
 
     },
 

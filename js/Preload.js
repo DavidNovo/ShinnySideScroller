@@ -13,10 +13,10 @@ BasicGame.Preloader.prototype = {
 
     preload: function() {
 
-        //	These are the assets we loaded in Boot.js
-        //	A nice sparkly background and a loading progress bar
-        this.background = this.add.sprite(0, 0, 'preloaderBackground');
-        this.preloadBar = this.add.sprite(300, 400, 'preloaderBar');
+        //show loading screen
+        this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloaderBar');
+        this.preloadBar.anchor.setTo(0.5);
+        this.preloadBar.scale.setTo(5);
 
         //	This sets the preloadBar sprite as a loader sprite.
         //	What that does is automatically crop the sprite from 0 to full-width
@@ -29,6 +29,22 @@ BasicGame.Preloader.prototype = {
         this.load.audio('gamePlayMusic', 'assets/audio/DooblyDoo.mp3' )
         this.load.bitmapFont('caslon', 'fonts/caslon.png', 'fonts/caslon.xml');
         //	+ lots of other required assets here
+
+         //load game assets
+         // these comands are for stop-motion animation
+         // first is the key for the spritesheet, next the location of the spritesheet
+         // the next two are height and width, then the number of frames in teh spritesheet
+        this.load.spritesheet('dog', 'assets/images/dog_walk.png', 122, 92, 2);
+        this.load.spritesheet('playerScratch', 'assets/images/dog_scratch.png', 116, 100, 2);
+        this.load.spritesheet('playerDig', 'assets/images/dog_dig.png', 129, 100, 2);
+
+        // static game images
+        this.load.image('ground', 'assets/images/ground.png');
+        this.load.image('grass', 'assets/images/grass.png');
+
+        // audio game files
+        this.load.audio('whine', ['assets/audio/whine.ogg', 'assets/audio/whine.mp3']);
+        this.load.audio('bark', ['assets/audio/bark.ogg', 'assets/audio/bark.mp3']);
 
     },
 
