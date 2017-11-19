@@ -51,6 +51,8 @@ BasicGame.Preloader.prototype = {
     
         //Adapted from https://openclipart.org/detail/6570/flea:
         this.load.image('flea', 'assets/images/flea.png');
+        this.load.image('bone', 'assets/images/toys/bone.png');
+        this.load.image('ball', 'assets/images/toys/tennisball.png')
 
     },
 

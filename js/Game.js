@@ -242,10 +242,91 @@ BasicGame.Game.prototype = {
         }
     },
 
+    checkDig: function () {
+        if (this.cursors.down.isDown || (this.swipe.isDown && (this.swipe.position.y > this.swipe.positionDown.y))) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    },
+    collect: function (player, mound) {
+        //this is called continuously while player is on mound, but we only want to do it once
+        if (!this.stopped) {
+            //change image and update the body size for the physics engine
+            this.player.loadTexture('playerDig');
+            this.player.animations.play('dig', 10, true);
+            this.player.body.setSize(this.player.digDimensions.width, this.player.digDimensions.height);
+
+            //we can't remove the toy mound until digging is finished, so we have to set a variable for
+            //the function called from the timer (below)
+            this.currentMound = mound;
+
+            //we stop a couple of seconds for the dig animation to play
+            this.stopped = true;
+            this.player.body.velocity.x = 0;
+            this.game.time.events.add(Phaser.Timer.SECOND * 2, this.playerDig, this);
+        }
+    },
+    playerDig: function () {
+        //play audio
+        this.barkSound.play();
+
+        //grab the location before we destroy the toy mound so we can place the toy
+        var x = this.currentMound.x;
+
+        //remove toy the mound sprite now that the toy is collected
+        this.currentMound.destroy();
+
+        //refresh our points stats
+        this.points += 5;
+        this.refreshStats();
+
+        //randomly pull a toy from the array
+        this.currentToy = this.toys[Math.floor(Math.random() * this.toys.length)];
+
+        //make the toy visible where the mound used to be
+        this.currentToy.visible = true;
+        this.currentToy.x = x;
+
+        //and make it disappear again after one second
+        this.game.time.events.add(Phaser.Timer.SECOND, this.currentToyInvisible, this);
+
+        //We switch back to the standing version of the player
+        this.player.loadTexture('dog');
+        this.player.animations.play('walk', 3, true);
+        this.player.body.setSize(this.player.standDimensions.width, this.player.standDimensions.height);
+        this.stopped = false;
+    },
+    currentToyInvisible: function () {
+        this.currentToy.visible = false;
+    },
+    playerBit: function (player, flea) {
+        //remove the flea that bit our player so it is no longer in the way
+        flea.destroy();
+
+        //update our stats
+        this.scratches++;
+        this.refreshStats();
+
+        //change sprite image
+        this.player.loadTexture('playerScratch');
+        this.player.animations.play('scratch', 10, true);
+
+        //play audio
+        this.whineSound.play();
+
+        //wait a couple of seconds for the scratch animation to play before continuing
+        this.stopped = true;
+        this.player.body.velocity.x = 0;
+        this.game.time.events.add(Phaser.Timer.SECOND * 2, this.playerScratch, this);
+    },
     refreshStats: function () {
         this.pointsText.text = this.points;
         this.fleasText.text = this.maxScratches - this.scratches;
     },
+
+
 
     quitGame: function (pointer) {
 
