@@ -131,23 +131,23 @@ BasicGame.Game.prototype = {
     },
 
     update: function () {
-
+        console.log("in the update function!!!!!!!!!");
         //  Honestly, just about anything could go here. It's YOUR game after all. 
         // Eat your heart out!
 
         // player land on ground instead of falling through
         this.game.physics.arcade.collide(this.player, this.ground, this.playerHit, null, this);
-
         // player bitten by a flea
         this.game.physics.arcade.collide(this.player, this.fleas, this.playerBit, null, this);
-
         // player can overlap with dirt mounds
         this.game.physics.arcade.overlap(this.player, this.mounds, this.collect, this.checkDig, this);
 
+
         //only respond to keys and keep the speed if the player is alive
         if (this.player.alive && !this.stopped) {
+            console.log('I am still alive');
 
-            this.player.body.velocity.x = 200;
+            this.player.body.velocity.x = 250;
             //We do a little math to determine whether the game world has wrapped around.
             //If so, we want to destroy everything and regenerate, so the game will remain random
             if (!this.wrapping && this.player.x < this.game.width) {
@@ -160,7 +160,7 @@ BasicGame.Game.prototype = {
                 this.generateFleas();
                 this.mounds.destroy();
                 this.generateMounds();
-
+                console.log('resetting things');
                 // then put things back in the correct order
                 this.game.world.bringToTop(this.grass);
                 this.game.world.bringToTop(this.mounds);
@@ -190,7 +190,7 @@ BasicGame.Game.prototype = {
     },
 
     render: function () {
-        //this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");   
+        this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");
     },
 
     generateMounds: function () {
@@ -313,7 +313,7 @@ BasicGame.Game.prototype = {
         this.player.loadTexture('playerScratch');
         this.player.animations.play('scratch', 10, true);
 
-        //play audio
+        //play whine audio
         this.whineSound.play();
 
         //wait a couple of seconds for the scratch animation to play before continuing
@@ -326,6 +326,47 @@ BasicGame.Game.prototype = {
         this.fleasText.text = this.maxScratches - this.scratches;
     },
 
+    playerHit: function (player, blockedLayer) {
+        if (player.body.touching.right) {
+            //can add other functionality here for extra obstacles later
+        }
+    },
+    playerScratch: function () {
+        this.stopped = false;
+
+        // check the number of scratches, if 5 or greater
+        // the player dies
+        if (this.scratches >= 5) {
+            console.log("scratches greater than 4");
+            this.player.alive = false;
+
+            // reset world,
+            this.fleas.destroy();
+            this.mounds.destroy();
+
+            this.player.loadTexture('dog');
+            this.player.animations.play('walk', 10, true);
+            this.player.body.setSize(this.player.standDimensions.width, this.player.standDimensions.height);
+
+            //.. then run home
+            this.player.anchor.setTo(.5, 1);
+            this.player.scale.x = -1;
+            this.player.body.velocity.x = -1000;
+
+            // run off the screen
+            this.game.camera.unfollow();
+
+            //..then go to Game Over state
+            this.game.time.events.add(15000, this.gameOver, this);
+
+        } else {
+            console.log("in the playerScratch function!!!!!!!!!");
+            this.player.loadTexture('dog');
+            this.player.animations.play('walk', 3, true);
+            this.player.body.setSize(this.player.standDimensions.width, this.player.standDimensions.height);
+        }
+        console.log("leaving the playerScratch function");
+    },
 
 
     quitGame: function (pointer) {
