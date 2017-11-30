@@ -1,6 +1,6 @@
 var BasicGame = BasicGame || {};
 
-BasicGame.Game = function () {
+BasicGame.Game = function() {
 
     //  When a State is added to Phaser it automatically has the following 
     // properties set on it, even if they already exist:
@@ -29,11 +29,11 @@ BasicGame.Game = function () {
 
 BasicGame.Game.prototype = {
 
-    preload: function () {
+    preload: function() {
         this.game.time.advancedTiming = true;
     },
 
-    create: function () {
+    create: function() {
 
         // sounds
         this.barkSound = this.game.add.audio('bark');
@@ -130,8 +130,7 @@ BasicGame.Game.prototype = {
         this.swipe = this.game.input.activePointer;
     },
 
-    update: function () {
-        console.log("in the update function!!!!!!!!!");
+    update: function() {
         //  Honestly, just about anything could go here. It's YOUR game after all. 
         // Eat your heart out!
 
@@ -145,7 +144,6 @@ BasicGame.Game.prototype = {
 
         //only respond to keys and keep the speed if the player is alive
         if (this.player.alive && !this.stopped) {
-            console.log('I am still alive');
 
             this.player.body.velocity.x = 250;
             //We do a little math to determine whether the game world has wrapped around.
@@ -160,7 +158,6 @@ BasicGame.Game.prototype = {
                 this.generateFleas();
                 this.mounds.destroy();
                 this.generateMounds();
-                console.log('resetting things');
                 // then put things back in the correct order
                 this.game.world.bringToTop(this.grass);
                 this.game.world.bringToTop(this.mounds);
@@ -175,8 +172,7 @@ BasicGame.Game.prototype = {
             //  because of latency problems (it takes too long to jump before hitting a flea)
             if (this.swipe.isDown && (this.swipe.positionDown.y > this.swipe.position.y)) {
                 this.playerJump();
-            }
-            else if (this.cursors.up.isDown) {
+            } else if (this.cursors.up.isDown) {
                 this.playerJump();
             }
 
@@ -189,11 +185,11 @@ BasicGame.Game.prototype = {
 
     },
 
-    render: function () {
+    render: function() {
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");
     },
 
-    generateMounds: function () {
+    generateMounds: function() {
         this.mounds = this.game.add.group();
 
         //enable physics in them
@@ -212,7 +208,7 @@ BasicGame.Game.prototype = {
         }
     },
 
-    generateFleas: function () {
+    generateFleas: function() {
         this.fleas = this.game.add.group();
 
         //enable physics in them
@@ -235,22 +231,21 @@ BasicGame.Game.prototype = {
             flea.body.collideWorldBounds = false;
         }
     },
-    playerJump: function () {
+    playerJump: function() {
         //when the ground is a sprite, we need to test for "touching" instead of "blocked"
         if (this.player.body.touching.down) {
             this.player.body.velocity.y -= 700;
         }
     },
 
-    checkDig: function () {
+    checkDig: function() {
         if (this.cursors.down.isDown || (this.swipe.isDown && (this.swipe.position.y > this.swipe.positionDown.y))) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     },
-    collect: function (player, mound) {
+    collect: function(player, mound) {
         //this is called continuously while player is on mound, but we only want to do it once
         if (!this.stopped) {
             //change image and update the body size for the physics engine
@@ -268,7 +263,7 @@ BasicGame.Game.prototype = {
             this.game.time.events.add(Phaser.Timer.SECOND * 2, this.playerDig, this);
         }
     },
-    playerDig: function () {
+    playerDig: function() {
         //play audio
         this.barkSound.play();
 
@@ -296,12 +291,13 @@ BasicGame.Game.prototype = {
         this.player.loadTexture('dog');
         this.player.animations.play('walk', 3, true);
         this.player.body.setSize(this.player.standDimensions.width, this.player.standDimensions.height);
+        this.player.anchor.setTo(0.5, 1.1);
         this.stopped = false;
     },
-    currentToyInvisible: function () {
+    currentToyInvisible: function() {
         this.currentToy.visible = false;
     },
-    playerBit: function (player, flea) {
+    playerBit: function(player, flea) {
         //remove the flea that bit our player so it is no longer in the way
         flea.destroy();
 
@@ -321,23 +317,22 @@ BasicGame.Game.prototype = {
         this.player.body.velocity.x = 0;
         this.game.time.events.add(Phaser.Timer.SECOND * 2, this.playerScratch, this);
     },
-    refreshStats: function () {
+    refreshStats: function() {
         this.pointsText.text = this.points;
         this.fleasText.text = this.maxScratches - this.scratches;
     },
 
-    playerHit: function (player, blockedLayer) {
+    playerHit: function(player, blockedLayer) {
         if (player.body.touching.right) {
             //can add other functionality here for extra obstacles later
         }
     },
-    playerScratch: function () {
+    playerScratch: function() {
         this.stopped = false;
 
         // check the number of scratches, if 5 or greater
         // the player dies
         if (this.scratches >= 5) {
-            console.log("scratches greater than 4");
             this.player.alive = false;
 
             // reset world,
@@ -349,7 +344,6 @@ BasicGame.Game.prototype = {
             this.player.body.setSize(this.player.standDimensions.width, this.player.standDimensions.height);
 
             //.. then run home
-            this.player.anchor.setTo(.5, 1);
             this.player.scale.x = -1;
             this.player.body.velocity.x = -1000;
 
@@ -364,12 +358,12 @@ BasicGame.Game.prototype = {
             this.player.loadTexture('dog');
             this.player.animations.play('walk', 3, true);
             this.player.body.setSize(this.player.standDimensions.width, this.player.standDimensions.height);
+            this.player.anchor.setTo(0.5, 1.1);
         }
-        console.log("leaving the playerScratch function");
     },
 
 
-    quitGame: function (pointer) {
+    quitGame: function(pointer) {
 
         //  Here you should destroy anything you no longer need.
         //  Stop music, delete sprites, purge caches, free resources, all that good stuff.
