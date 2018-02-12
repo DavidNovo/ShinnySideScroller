@@ -122,7 +122,7 @@ BasicGame.Game.prototype = {
         var playerScratchImg = this.game.cache.getImage('playerScratch');
         this.player.animations.add('scratch');
         this.player.scratchDimensions = {
-            width: playerScratchImg.width,
+            width: playerScratchImg.width ,
             height: playerScratchImg.height
         };
 
@@ -201,6 +201,7 @@ BasicGame.Game.prototype = {
     },
 
     render: function () {
+        //game.debug.body(sprite);
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");
     },
 
@@ -306,7 +307,7 @@ BasicGame.Game.prototype = {
         this.player.loadTexture('dog');
         this.player.animations.play('walk', 3, true);
         this.player.body.setSize(this.player.standDimensions.width, this.player.standDimensions.height);
-        this.player.anchor.setTo(0.5, 1.1);
+        this.player.anchor.setTo(0.5, 1.0);
         this.stopped = false;
     },
     currentToyInvisible: function () {
@@ -329,6 +330,10 @@ BasicGame.Game.prototype = {
 
         //wait a couple of seconds for the scratch animation to play before continuing
         this.stopped = true;
+        // my fix, ths following line was causeing the problem
+        // it was set to (0.5, 1.1) which caused the player
+        // to sink below the colission line of the ground.
+        this.player.anchor.setTo(0.5, 1.0);
         this.player.body.velocity.x = 0;
         this.game.time.events.add(Phaser.Timer.SECOND * 2, this.playerScratch, this);
     },
@@ -354,6 +359,7 @@ BasicGame.Game.prototype = {
             this.fleas.destroy();
             this.mounds.destroy();
 
+            this.player.anchor.setTo(0.5, 1.1);
             this.player.loadTexture('dog');
             this.player.animations.play('walk', 10, true);
             this.player.body.setSize(this.player.standDimensions.width, this.player.standDimensions.height);
@@ -370,10 +376,11 @@ BasicGame.Game.prototype = {
 
         } else {
             console.log("in the playerScratch function!!!!!!!!!");
+            this.player.anchor.setTo(0.5, 1.1);
             this.player.loadTexture('dog');
             this.player.animations.play('walk', 3, true);
             this.player.body.setSize(this.player.standDimensions.width, this.player.standDimensions.height);
-            this.player.anchor.setTo(0.5, 1.1);
+ 
         }
     },
 
