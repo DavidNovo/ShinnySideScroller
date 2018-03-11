@@ -122,7 +122,7 @@ BasicGame.Game.prototype = {
         var playerScratchImg = this.game.cache.getImage('playerScratch');
         this.player.animations.add('scratch');
         this.player.scratchDimensions = {
-            width: playerScratchImg.width ,
+            width: playerScratchImg.width,
             height: playerScratchImg.height
         };
 
@@ -380,7 +380,7 @@ BasicGame.Game.prototype = {
             this.player.loadTexture('dog');
             this.player.animations.play('walk', 3, true);
             this.player.body.setSize(this.player.standDimensions.width, this.player.standDimensions.height);
- 
+
         }
     },
 
